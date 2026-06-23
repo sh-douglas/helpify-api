@@ -1,4 +1,4 @@
-import { User } from "../models/index.js";
+import { Role, User } from "../models/index.js";
 
 class UserRepository {
   async create(data) {
@@ -15,6 +15,19 @@ class UserRepository {
 
   async findById(id) {
     return User.findByPk(id);
+  }
+
+  async findByEmailWithRole(email) {
+    return User.findOne({
+      where: {
+        email,
+      },
+      include: {
+        model: Role,
+        as: "role",
+        attributes: ["id", "name"],
+      },
+    });
   }
 }
 
