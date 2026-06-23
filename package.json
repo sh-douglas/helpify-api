@@ -1,0 +1,43 @@
+{
+  "name": "helpify-api",
+  "version": "0.0.1",
+  "description": "API for the HelpDesk Ticket System",
+  "keywords": [
+    "Express",
+    "Cors",
+    "Helmet",
+    "Bcryptjs",
+    "Sequelize",
+    "JsonWebToken",
+    "Zod",
+    "MySql2",
+    "DotEnv"
+  ],
+  "homepage": "https://github.com/sh-douglas/helpify-api#readme",
+  "bugs": {
+    "url": "https://github.com/sh-douglas/helpify-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sh-douglas/helpify-api.git"
+  },
+  "license": "MIT",
+  "author": "Douglas",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.22.5",
+    "sequelize": "^6.37.8",
+    "zod": "^4.4.3"
+  }
+}
