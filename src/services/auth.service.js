@@ -3,7 +3,7 @@ import bcryptjs from "bcryptjs";
 
 import UserRepository from "../repositories/user.repository.js";
 import RoleRepository from "../repositories/role.repository.js";
-import AppError from "../utils/AppError.js";
+import AppError from "../utils/app-error.js";
 
 import { registerSchema, loginSchema } from "../validators/auth.validators.js";
 

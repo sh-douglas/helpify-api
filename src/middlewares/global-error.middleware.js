@@ -1,5 +1,5 @@
 import { ZodError } from "zod";
-import AppError from "../utils/AppError.js";
+import AppError from "../utils/app-error.js";
 
 function globalErrorHandler(error, req, res, next) {
   if (error instanceof AppError) {

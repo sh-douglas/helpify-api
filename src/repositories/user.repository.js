@@ -29,6 +29,19 @@ class UserRepository {
       },
     });
   }
+
+  async findByIdWithRole(id) {
+    return User.findOne({
+      where: {
+        id,
+      },
+      include: {
+        model: Role,
+        as: "role",
+        attributes: ["id", "name"],
+      },
+    });
+  }
 }
 
 export default new UserRepository();
