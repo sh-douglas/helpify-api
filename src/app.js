@@ -1,10 +1,12 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-const app = express();
 
 import authRoutes from "./routes/auth.routes.js";
+import categoryRoutes from "./routes/category.routes.js";
 import globalErrorHandler from "./middlewares/global-error.middleware.js";
+
+const app = express();
 
 app.use(express.json());
 app.use(cors());
@@ -18,6 +20,7 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/categories", categoryRoutes);
 
 app.use(globalErrorHandler);
 
