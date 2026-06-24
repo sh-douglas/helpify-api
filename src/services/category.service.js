@@ -85,7 +85,7 @@ class CategoryService {
       throw new AppError("Category not found.", 404);
     }
 
-    await registeredCategory.delete(id);
+    await CategoryRepository.delete(registeredCategory);
 
     return {
       message: "Category has been deleted.",
