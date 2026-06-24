@@ -15,4 +15,4 @@ User.belongsTo(Role, {
   onDelete: "RESTRICT",
 });
 
-export { User, Role };
+export { User, Role, Category };
