@@ -10,11 +10,11 @@ class TicketService {
   async create(data, userId) {
     const cleanData = createTicketSchema.parse(data);
 
-    const registeredCategory = await CategoryRepository.findById(
+    const existingCategory = await CategoryRepository.findById(
       cleanData.categoryId,
     );
 
-    if (!registeredCategory) {
+    if (!existingCategory) {
       throw new AppError("Category not found.", 404);
     }
 
@@ -22,14 +22,15 @@ class TicketService {
       title: cleanData.title,
       description: cleanData.description,
       categoryId: cleanData.categoryId,
-      priority: cleanData?.priority,
+      priority: cleanData.priority,
       userId,
     };
 
     const newTicket = await TicketRepository.create(ticketData);
+    const ticket = await TicketRepository.findById(newTicket.id);
 
     return {
-      newTicket,
+      ticket,
     };
   }
 
@@ -100,8 +101,10 @@ class TicketService {
     }
 
     const updatedTicket = await TicketRepository.update(ticket, cleanData);
+    const refreshedTicket = await TicketRepository.findById(updatedTicket.id);
+
     return {
-      updatedTicket,
+      ticket: refreshedTicket,
     };
   }
 

@@ -1,4 +1,4 @@
-import { Ticket } from "../models/index.js";
+import { Category, Ticket, User } from "../models/index.js";
 
 class TicketRepository {
   async create(data) {
@@ -6,15 +6,55 @@ class TicketRepository {
   }
 
   async findAll() {
-    return Ticket.findAll();
+    return Ticket.findAll({
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "name", "email"],
+        },
+        {
+          model: Category,
+          as: "category",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
   }
 
   async findById(id) {
-    return Ticket.findByPk(id);
+    return Ticket.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "name", "email"],
+        },
+        {
+          model: Category,
+          as: "category",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
   }
 
   async findAllByUserId(userId) {
-    return Ticket.findAll({ where: { userId } });
+    return Ticket.findAll({
+      where: { userId },
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "name", "email"],
+        },
+        {
+          model: Category,
+          as: "category",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
   }
 
   async update(ticket, data) {
