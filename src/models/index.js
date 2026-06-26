@@ -3,6 +3,7 @@ import Role from "./Role.js";
 
 import Category from "./Category.js";
 import Ticket from "./Ticket.js";
+import Comment from "./Comment.js";
 
 Role.hasMany(User, {
   foreignKey: "roleId",
@@ -52,4 +53,28 @@ Ticket.belongsTo(User, {
   onDelete: "SET NULL",
 });
 
-export { User, Role, Category, Ticket };
+Ticket.hasMany(Comment, {
+  foreignKey: "ticketId",
+  as: "comments",
+});
+
+Comment.belongsTo(Ticket, {
+  foreignKey: "ticketId",
+  as: "ticket",
+  onUpdate: "CASCADE",
+  onDelete: "CASCADE",
+});
+
+User.hasMany(Comment, {
+  foreignKey: "userId",
+  as: "comments",
+});
+
+Comment.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user",
+  onUpdate: "CASCADE",
+  onDelete: "RESTRICT",
+});
+
+export { User, Role, Category, Ticket, Comment };
