@@ -1,6 +1,9 @@
 import TicketRepository from "../repositories/ticket.repository.js";
 import CategoryRepository from "../repositories/category.repository.js";
+import autoAssigmentService from "./auto-assigment.service.js";
+
 import AppError from "../utils/app-error.js";
+
 import {
   createTicketSchema,
   updateTicketSchema,
@@ -18,12 +21,16 @@ class TicketService {
       throw new AppError("Category not found.", 404);
     }
 
+    const assignedTechnician =
+      await autoAssigmentService.findTechnicianWithLessActiveTickets();
+
     const ticketData = {
       title: cleanData.title,
       description: cleanData.description,
       categoryId: cleanData.categoryId,
       priority: cleanData.priority,
       userId,
+      assignedToId: assignedTechnician?.id || null,
     };
 
     const newTicket = await TicketRepository.create(ticketData);

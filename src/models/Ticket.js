@@ -44,6 +44,16 @@ const Ticket = sequelize.define(
       onUpdate: "CASCADE",
       onDelete: "RESTRICT",
     },
+    assignedToId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "users",
+        key: "id",
+      },
+      onUpdate: "CASCADE",
+      onDelete: "SET NULL",
+    },
     categoryId: {
       type: DataTypes.INTEGER,
       allowNull: false,

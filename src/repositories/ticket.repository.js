@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { Category, Ticket, User } from "../models/index.js";
 
 class TicketRepository {
@@ -18,6 +19,11 @@ class TicketRepository {
           as: "category",
           attributes: ["id", "name"],
         },
+        {
+          model: User,
+          as: "assignedTechnician",
+          attributes: ["id", "name", "email"],
+        },
       ],
     });
   }
@@ -34,6 +40,11 @@ class TicketRepository {
           model: Category,
           as: "category",
           attributes: ["id", "name"],
+        },
+        {
+          model: User,
+          as: "assignedTechnician",
+          attributes: ["id", "name", "email"],
         },
       ],
     });
@@ -53,6 +64,11 @@ class TicketRepository {
           as: "category",
           attributes: ["id", "name"],
         },
+        {
+          model: User,
+          as: "assignedTechnician",
+          attributes: ["id", "name", "email"],
+        },
       ],
     });
   }
@@ -63,6 +79,17 @@ class TicketRepository {
 
   async delete(ticket) {
     return ticket.destroy();
+  }
+
+  async countActiveByTechnicianId(technicianId) {
+    return Ticket.count({
+      where: {
+        assignedToId: technicianId,
+        status: {
+          [Op.in]: ["OPEN", "IN_PROGRESS", "WAITING_USER"],
+        },
+      },
+    });
   }
 }
 

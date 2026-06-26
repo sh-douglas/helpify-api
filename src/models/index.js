@@ -40,4 +40,16 @@ Ticket.belongsTo(Category, {
   onDelete: "RESTRICT",
 });
 
+User.hasMany(Ticket, {
+  foreignKey: "assignedToId",
+  as: "assignedTickets",
+});
+
+Ticket.belongsTo(User, {
+  foreignKey: "assignedToId",
+  as: "assignedTechnician",
+  onUpdate: "CASCADE",
+  onDelete: "SET NULL",
+});
+
 export { User, Role, Category, Ticket };

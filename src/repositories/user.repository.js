@@ -42,6 +42,18 @@ class UserRepository {
       },
     });
   }
+
+  async findAllTechnicians() {
+    return User.findAll({
+      attributes: ["id", "name", "email"],
+      include: {
+        model: Role,
+        as: "role",
+        attributes: ["id", "name"],
+        where: { name: "TECHNICIAN" },
+      },
+    });
+  }
 }
 
 export default new UserRepository();
