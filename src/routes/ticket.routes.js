@@ -4,6 +4,7 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 
 import TicketController from "../controllers/ticket.controller.js";
 import CommentController from "../controllers/comment.controller.js";
+import ticketStatusHistoryController from "../controllers/ticket-status-history.controller.js";
 
 const router = Router();
 
@@ -18,6 +19,12 @@ router.get(
   "/:ticketId/comments",
   authMiddleware,
   CommentController.findAllByTicketId,
+);
+
+router.get(
+  "/:ticketId/status-histories",
+  authMiddleware,
+  ticketStatusHistoryController.findAllByTicketId,
 );
 
 export default router;
