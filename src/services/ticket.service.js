@@ -1,5 +1,6 @@
 import TicketRepository from "../repositories/ticket.repository.js";
 import CategoryRepository from "../repositories/category.repository.js";
+import TicketStatusHistoryRepository from "../repositories/ticket-status-history.repository.js";
 import autoAssigmentService from "./auto-assigment.service.js";
 
 import AppError from "../utils/app-error.js";
@@ -107,7 +108,23 @@ class TicketService {
       }
     }
 
+    const oldStatus = ticket.status;
+    const statusChanged = cleanData.status && cleanData.status !== oldStatus;
     const updatedTicket = await TicketRepository.update(ticket, cleanData);
+
+    if (statusChanged) {
+      const statusHistoryData = {
+        ticketId: ticket.id,
+        changedById: currentUser.id,
+        oldStatus: oldStatus,
+        newStatus: cleanData.status,
+      };
+
+      const teste =
+        await TicketStatusHistoryRepository.create(statusHistoryData);
+      console.log(teste);
+    }
+
     const refreshedTicket = await TicketRepository.findById(updatedTicket.id);
 
     return {

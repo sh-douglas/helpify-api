@@ -5,6 +5,8 @@ import Category from "./Category.js";
 import Ticket from "./Ticket.js";
 import Comment from "./Comment.js";
 
+import TicketStatusHistory from "./TicketStatusHistory.js";
+
 Role.hasMany(User, {
   foreignKey: "roleId",
   as: "users",
@@ -77,4 +79,28 @@ Comment.belongsTo(User, {
   onDelete: "RESTRICT",
 });
 
-export { User, Role, Category, Ticket, Comment };
+Ticket.hasMany(TicketStatusHistory, {
+  foreignKey: "ticketId",
+  as: "statusHistories",
+});
+
+TicketStatusHistory.belongsTo(Ticket, {
+  foreignKey: "ticketId",
+  as: "ticket",
+  onUpdate: "CASCADE",
+  onDelete: "CASCADE",
+});
+
+User.hasMany(TicketStatusHistory, {
+  foreignKey: "changedById",
+  as: "ticketStatusChanges",
+});
+
+TicketStatusHistory.belongsTo(User, {
+  foreignKey: "changedById",
+  as: "changedBy",
+  onUpdate: "CASCADE",
+  onDelete: "RESTRICT",
+});
+
+export { User, Role, Category, Ticket, Comment, TicketStatusHistory };

@@ -1,5 +1,56 @@
 import { Op } from "sequelize";
-import { Category, Ticket, User } from "../models/index.js";
+import {
+  Category,
+  Ticket,
+  TicketStatusHistory,
+  User,
+} from "../models/index.js";
+
+const defaultIncludes = [
+  {
+    model: User,
+    as: "user",
+    attributes: ["id", "name", "email"],
+  },
+  {
+    model: Category,
+    as: "category",
+    attributes: ["id", "name"],
+  },
+  {
+    model: User,
+    as: "assignedTechnician",
+    attributes: ["id", "name", "email"],
+  },
+  {
+    model: TicketStatusHistory,
+    as: "statusHistories",
+    attributes: [
+      "id",
+      "ticketId",
+      "changedById",
+      "oldStatus",
+      "newStatus",
+      "createdAt",
+    ],
+    include: {
+      model: User,
+      as: "changedBy",
+      attributes: ["id", "name", "email"],
+    },
+  },
+];
+
+const statusHistoryOrder = [
+  [
+    {
+      model: TicketStatusHistory,
+      as: "statusHistories",
+    },
+    "createdAt",
+    "ASC",
+  ],
+];
 
 class TicketRepository {
   async create(data) {
@@ -8,68 +59,23 @@ class TicketRepository {
 
   async findAll() {
     return Ticket.findAll({
-      include: [
-        {
-          model: User,
-          as: "user",
-          attributes: ["id", "name", "email"],
-        },
-        {
-          model: Category,
-          as: "category",
-          attributes: ["id", "name"],
-        },
-        {
-          model: User,
-          as: "assignedTechnician",
-          attributes: ["id", "name", "email"],
-        },
-      ],
+      include: defaultIncludes,
+      order: statusHistoryOrder,
     });
   }
 
   async findById(id) {
     return Ticket.findByPk(id, {
-      include: [
-        {
-          model: User,
-          as: "user",
-          attributes: ["id", "name", "email"],
-        },
-        {
-          model: Category,
-          as: "category",
-          attributes: ["id", "name"],
-        },
-        {
-          model: User,
-          as: "assignedTechnician",
-          attributes: ["id", "name", "email"],
-        },
-      ],
+      include: defaultIncludes,
+      order: statusHistoryOrder,
     });
   }
 
   async findAllByUserId(userId) {
     return Ticket.findAll({
       where: { userId },
-      include: [
-        {
-          model: User,
-          as: "user",
-          attributes: ["id", "name", "email"],
-        },
-        {
-          model: Category,
-          as: "category",
-          attributes: ["id", "name"],
-        },
-        {
-          model: User,
-          as: "assignedTechnician",
-          attributes: ["id", "name", "email"],
-        },
-      ],
+      include: defaultIncludes,
+      order: statusHistoryOrder,
     });
   }
 
