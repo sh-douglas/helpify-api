@@ -9,10 +9,7 @@ const port = process.env.PORT || 5000;
 
 try {
   await sequelize.authenticate();
-  console.log("Database connected");
-  app.listen(port, () => {
-    console.log(`App running on: http://localhost:${port}`);
-  });
+  app.listen(port);
 } catch (error) {
   console.error(error);
   process.exit(1);
