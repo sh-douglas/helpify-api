@@ -79,8 +79,8 @@ class TicketRepository {
     });
   }
 
-  async update(ticket, data) {
-    return ticket.update(data);
+  async update(ticket, data, options) {
+    return ticket.update(data, options);
   }
 
   async delete(ticket) {

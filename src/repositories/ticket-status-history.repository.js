@@ -1,8 +1,8 @@
 import { TicketStatusHistory, User } from "../models/index.js";
 
 class TicketStatusHistoryRepository {
-  async create(data) {
-    return TicketStatusHistory.create(data);
+  async create(data, options) {
+    return TicketStatusHistory.create(data, options);
   }
 
   async findAllByTicketId(ticketId) {

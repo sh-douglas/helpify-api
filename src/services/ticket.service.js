@@ -3,6 +3,8 @@ import CategoryRepository from "../repositories/category.repository.js";
 import TicketStatusHistoryRepository from "../repositories/ticket-status-history.repository.js";
 import autoAssigmentService from "./auto-assigment.service.js";
 
+import sequelize from "../config/database.js";
+
 import AppError from "../utils/app-error.js";
 
 import {
@@ -95,17 +97,32 @@ class TicketService {
 
     const oldStatus = ticket.status;
     const statusChanged = cleanData.status && cleanData.status !== oldStatus;
-    const updatedTicket = await TicketRepository.update(ticket, cleanData);
 
-    if (statusChanged) {
-      const statusHistoryData = {
-        ticketId: ticket.id,
-        changedById: currentUser.id,
-        oldStatus,
-        newStatus: cleanData.status,
-      };
+    const transaction = await sequelize.transaction();
 
-      await TicketStatusHistoryRepository.create(statusHistoryData);
+    let updatedTicket;
+
+    try {
+      updatedTicket = await TicketRepository.update(ticket, cleanData, {
+        transaction,
+      });
+
+      if (statusChanged) {
+        const statusHistoryData = {
+          ticketId: ticket.id,
+          changedById: currentUser.id,
+          oldStatus,
+          newStatus: cleanData.status,
+        };
+
+        await TicketStatusHistoryRepository.create(statusHistoryData, {
+          transaction,
+        });
+      }
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
     }
 
     const refreshedTicket = await TicketRepository.findById(updatedTicket.id);
