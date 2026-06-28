@@ -17,7 +17,54 @@ class DashboardService {
 
     const totalTickets = await DashboardRepository.countTickets(filter);
 
-    return { totalTickets };
+    const openTickets = await DashboardRepository.countTicketsByStatus(
+      filter,
+      "OPEN",
+    );
+    const inProgressTickets = await DashboardRepository.countTicketsByStatus(
+      filter,
+      "IN_PROGRESS",
+    );
+    const waitingUserTickets = await DashboardRepository.countTicketsByStatus(
+      filter,
+      "WAITING_USER",
+    );
+    const resolvedTickets = await DashboardRepository.countTicketsByStatus(
+      filter,
+      "RESOLVED",
+    );
+    const closedTickets = await DashboardRepository.countTicketsByStatus(
+      filter,
+      "CLOSED",
+    );
+
+    const lowPriorityTickets = await DashboardRepository.countTicketsByPriority(
+      filter,
+      "LOW",
+    );
+    const mediumPriorityTickets =
+      await DashboardRepository.countTicketsByPriority(filter, "MEDIUM");
+    const highPriorityTickets =
+      await DashboardRepository.countTicketsByPriority(filter, "HIGH");
+    const criticalPriorityTickets =
+      await DashboardRepository.countTicketsByPriority(filter, "CRITICAL");
+
+    return {
+      totalTickets,
+      ticketsByStatus: {
+        open: openTickets,
+        inProgress: inProgressTickets,
+        waitingUser: waitingUserTickets,
+        resolved: resolvedTickets,
+        closed: closedTickets,
+      },
+      ticketsByPriority: {
+        low: lowPriorityTickets,
+        medium: mediumPriorityTickets,
+        high: highPriorityTickets,
+        critical: criticalPriorityTickets,
+      },
+    };
   }
 }
 
