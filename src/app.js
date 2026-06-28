@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
 import ticketRoutes from "./routes/ticket.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
+import userRoutes from "./routes/user.routes.js";
 import globalErrorHandler from "./middlewares/global-error.middleware.js";
 
 const app = express();
@@ -25,6 +26,7 @@ app.use("/dashboard", dashboardRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/tickets", ticketRoutes);
 app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 
 app.use(globalErrorHandler);
 
