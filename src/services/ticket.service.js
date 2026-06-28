@@ -45,11 +45,12 @@ class TicketService {
   async findAll(currentUser) {
     let tickets;
 
-    if (
-      currentUser.role.name === "ADMIN" ||
-      currentUser.role.name === "TECHNICIAN"
-    ) {
+    if (currentUser.role.name === "ADMIN") {
       tickets = await TicketRepository.findAll();
+    } else if (currentUser.role.name === "TECHNICIAN") {
+      tickets = await TicketRepository.findAllByAssignedTechnicianId(
+        currentUser.id,
+      );
     } else if (currentUser.role.name === "USER") {
       tickets = await TicketRepository.findAllByUserId(currentUser.id);
     } else {
@@ -68,20 +69,9 @@ class TicketService {
       throw new AppError("Ticket not found.", 404);
     }
 
-    if (
-      currentUser.role.name === "ADMIN" ||
-      currentUser.role.name === "TECHNICIAN"
-    ) {
-      return { ticket };
-    } else if (currentUser.role.name === "USER") {
-      if (ticket.userId !== currentUser.id) {
-        throw new AppError("Forbidden.", 403);
-      }
+    this.validateTicketViewAccess(ticket, currentUser);
 
-      return { ticket };
-    } else {
-      throw new AppError("Forbidden.", 403);
-    }
+    return { ticket };
   }
 
   async update(id, data, currentUser) {
@@ -93,12 +83,7 @@ class TicketService {
       throw new AppError("Ticket not found.", 404);
     }
 
-    if (
-      currentUser.role.name !== "ADMIN" &&
-      currentUser.role.name !== "TECHNICIAN"
-    ) {
-      throw new AppError("Forbidden.", 403);
-    }
+    this.validateTicketUpdateAccess(ticket, currentUser);
 
     if (cleanData.categoryId) {
       const category = await CategoryRepository.findById(cleanData.categoryId);
@@ -116,13 +101,11 @@ class TicketService {
       const statusHistoryData = {
         ticketId: ticket.id,
         changedById: currentUser.id,
-        oldStatus: oldStatus,
+        oldStatus,
         newStatus: cleanData.status,
       };
 
-      const teste =
-        await TicketStatusHistoryRepository.create(statusHistoryData);
-      console.log(teste);
+      await TicketStatusHistoryRepository.create(statusHistoryData);
     }
 
     const refreshedTicket = await TicketRepository.findById(updatedTicket.id);
@@ -148,6 +131,52 @@ class TicketService {
     return {
       message: "Ticket has been deleted.",
     };
+  }
+
+  validateTicketAccess(ticket, currentUser) {
+    if (currentUser.role.name === "ADMIN") {
+      return;
+    } else if (currentUser.role.name === "TECHNICIAN") {
+      if (ticket.assignedToId !== currentUser.id) {
+        throw new AppError("Forbidden.", 403);
+      }
+    } else if (currentUser.role.name === "USER") {
+      throw new AppError("Forbidden.", 403);
+    } else {
+      throw new AppError("Forbidden.", 403);
+    }
+  }
+
+  validateTicketViewAccess(ticket, currentUser) {
+    if (currentUser.role.name === "ADMIN") {
+      return;
+    } else if (currentUser.role.name === "TECHNICIAN") {
+      if (ticket.assignedToId !== currentUser.id) {
+        throw new AppError("Forbidden.", 403);
+      }
+
+      return;
+    } else if (currentUser.role.name === "USER") {
+      if (ticket.userId !== currentUser.id) {
+        throw new AppError("Forbidden.", 403);
+      }
+      return;
+    } else {
+      throw new AppError("Forbidden.", 403);
+    }
+  }
+
+  validateTicketUpdateAccess(ticket, currentUser) {
+    if (currentUser.role.name === "ADMIN") {
+      return;
+    } else if (currentUser.role.name === "TECHNICIAN") {
+      if (ticket.assignedToId !== currentUser.id) {
+        throw new AppError("Forbidden.", 403);
+      }
+      return;
+    } else {
+      throw new AppError("Forbidden.", 403);
+    }
   }
 }
 

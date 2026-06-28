@@ -97,6 +97,14 @@ class TicketRepository {
       },
     });
   }
+
+  async findAllByAssignedTechnicianId(technicianId) {
+    return Ticket.findAll({
+      where: { assignedToId: technicianId },
+      include: defaultIncludes,
+      order: statusHistoryOrder,
+    });
+  }
 }
 
 export default new TicketRepository();

@@ -35,7 +35,7 @@ class UserService {
     }
 
     if (currentUser.id === user.id) {
-      throw new AppError("Forbidden.", 403);
+      throw new AppError("You cannot change your own role.", 403);
     }
 
     const role = await RoleRepository.findByName(cleanData.role);

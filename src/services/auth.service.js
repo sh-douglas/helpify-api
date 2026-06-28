@@ -35,12 +35,14 @@ class AuthService {
     const createdUser = await UserRepository.create(newUser);
 
     return {
-      id: createdUser.id,
-      name: createdUser.name,
-      email: createdUser.email,
-      role: {
-        id: role.id,
-        name: role.name,
+      user: {
+        id: createdUser.id,
+        name: createdUser.name,
+        email: createdUser.email,
+        role: {
+          id: role.id,
+          name: role.name,
+        },
       },
     };
   }

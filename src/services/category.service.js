@@ -15,13 +15,13 @@ class CategoryService {
     );
 
     if (registeredCategory) {
-      throw new AppError("The category has already been registered", 409);
+      throw new AppError("The category has already been registered.", 409);
     }
 
     const newCategory = await CategoryRepository.create(cleanData);
 
     return {
-      newCategory,
+      category: newCategory,
     };
   }
 
@@ -29,7 +29,7 @@ class CategoryService {
     const allCategories = await CategoryRepository.findAll();
 
     return {
-      allCategories,
+      categories: allCategories,
     };
   }
 
@@ -65,7 +65,7 @@ class CategoryService {
       categoryWithSameName &&
       categoryWithSameName.id !== registeredCategory.id
     ) {
-      throw new AppError("The category has already been registered", 409);
+      throw new AppError("The category has already been registered.", 409);
     }
 
     const updatedCategory = await CategoryRepository.update(
@@ -74,7 +74,7 @@ class CategoryService {
     );
 
     return {
-      updatedCategory,
+      category: updatedCategory,
     };
   }
 
